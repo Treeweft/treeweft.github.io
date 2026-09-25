@@ -105,6 +105,19 @@
     margin-bottom: 18px;
   }
 
+  /* Rename banner (shown only when arriving with ?from=treeloom) */
+  #rename-banner {
+    padding: .75rem 1rem;
+    background: #1f6feb; color: #fff;
+    font: 15px/1.4 system-ui, sans-serif;
+    display: flex; gap: 1rem; align-items: center; justify-content: center;
+  }
+  #rename-banner[hidden] { display: none; }
+  #rename-banner button {
+    background: none; border: 0; color: inherit;
+    font-size: 1.25rem; cursor: pointer;
+  }
+
   /* Nav */
   nav {
     position: sticky; top: 0; z-index: 50;
@@ -275,6 +288,26 @@
 </style>
 </head>
 <body>
+
+<div id="rename-banner" hidden role="status">
+  <span><strong>Treeloom is now Treeweft.</strong> Same project, new name. Update your bookmarks.</span>
+  <button type="button" aria-label="Dismiss">×</button>
+</div>
+<script>
+(function () {
+  var params = new URLSearchParams(location.search);
+  if (params.get("from") !== "treeloom") return;
+
+  var banner = document.getElementById("rename-banner");
+  banner.hidden = false;
+  banner.querySelector("button").onclick = function () { banner.hidden = true; };
+
+  // Remove the marker so it isn't bookmarked, shared, or shown again on refresh
+  params.delete("from");
+  var clean = location.pathname + (params.toString() ? "?" + params : "") + location.hash;
+  history.replaceState(null, "", clean);
+})();
+</script>
 
 <nav>
   <div class="inner">
